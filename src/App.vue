@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
-		<!--		<ChatRoomView></ChatRoomView>-->
-		<RSocketTestView></RSocketTestView>
+		<ChatRoomView></ChatRoomView>
+		<!--		<RSocketTestView></RSocketTestView>-->
 	</div>
 </template>
 

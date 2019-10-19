@@ -1,34 +1,108 @@
 <template>
-	<div class="messages-container">
-		<p v-for="message in messages" class="message">{{ message }}</p>
+	<div class="scroll-border-radius-wrapper">
+		<div ref="container" class="messages-container">
+			<div
+					v-for="message in messages"
+					:class="{message: true, 'own-message': message.user === username}"
+			>
+				<p class="message-timestamp">{{ message.timestamp | formatTimestamp }}</p>
+				<p class="message-user">{{ message.user }} said:</p>
+				<p class="message-content">{{ message.message }}</p>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script lang="ts">
-	import {Component, Prop, Vue} from 'vue-property-decorator';
+	import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+	import ChatMessage from '@/assets/model/ChatMessage';
 
-	@Component({})
+	@Component({
+		filters: {
+			formatTimestamp(timestamp: number) {
+				const date = new Date(timestamp);
+				const hours = String(date.getHours()).padStart(2, '0');
+				const minutes = String(date.getMinutes()).padStart(2, '0');
+				return `${hours}:${minutes}`;
+			}
+		}
+	})
 	export default class MessagesContainer extends Vue {
+
+		public $refs!: {
+			container: HTMLDivElement
+		};
+
+		@Prop({
+			required: true,
+			type: String
+		})
+		private username!: string;
 
 		@Prop({
 			required: true,
 			type: Array
 		})
-		private messages!: string[];
+		private messages!: ChatMessage[];
+
+		@Watch('messages')
+		private onMessagesChange(): void {
+			setTimeout(this.moveScrollToBottom, 10);
+		}
+
+		private mounted(): void {
+			this.moveScrollToBottom();
+		}
+
+		private moveScrollToBottom(): void {
+			this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
+		}
 
 	}
 </script>
 
 <style scoped>
+	.scroll-border-radius-wrapper {
+		border-radius: 10px;
+		overflow: hidden;
+	}
+
 	.messages-container {
-		display: flex;
-		flex-direction: column;
-		flex-wrap: nowrap;
-		justify-content: flex-end;
-		align-items: stretch;
+		overflow: auto;
+		border: 1px solid #ccc;
+		border-radius: 10px;
+		height: 100%;
 	}
 
 	.message {
+		position: relative;
+		background-color: #ebedff;
+		margin: 10px;
+		max-width: 90%;
+		border-radius: 10px;
+		padding: 10px;
+	}
+
+	.message.own-message {
+		margin-left: 10%;
+		background-color: #ebffed;
+	}
+
+	.message-timestamp {
+		float: right;
+		margin: 0;
+		font-size: 0.8em;
+		color: gray;
+	}
+
+	.message-user {
+		margin: 0;
+		font-size: 0.8em;
+		color: gray;
+	}
+
+	.message-content {
+		margin: 0;
 		white-space: pre;
 	}
 </style>

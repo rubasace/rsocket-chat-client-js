@@ -4,7 +4,7 @@ html {
 }
 
 *, *:before, *:after {
-	box-sizing: inherit;
+	box-sizing: border-box;
 }
 
 body {
@@ -12,31 +12,30 @@ body {
 }
 
 #app {
-	font-family: 'Avenir', Helvetica, Arial, sans-serif;
+	font-family: 'Roboto', Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	text-align: center;
 	color: #2c3e50;
 	width: 100%;
 	height: 100vh;
 }
 
 input, textarea {
-	border: 1px solid gray;
+	border: 1px solid #ccc;
 	border-radius: 4px;
 	padding: 5px;
+	outline: none;
 }
 
 button {
 	background: #33a070;
 	border: 1px solid #35495e;
 	height: 35px;
-	width: 80px;
 	border-radius: 4px;
 	color: white;
 	font-weight: bold;
-	text-shadow: 0 0 1px #35495e;
 	cursor: pointer;
+	outline: none;
 }
 
 button:hover {
@@ -45,4 +44,33 @@ button:hover {
 
 button:active {
 	background: #278a5e;
+}
+
+button:disabled {
+	background: #eee;
+	color: #ccc;
+	border-color: #ddd;
+	cursor: not-allowed;
+}
+
+.full-height {
+	height: 100%;
+}
+
+* {
+	scrollbar-color: #ccc white;
+	scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+}
+
+::-webkit-scrollbar-track {
+	background: #eee;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #ccc;
+	/*border-right: 1px solid white;*/
 }
