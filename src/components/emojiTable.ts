@@ -1,4 +1,14 @@
-export default {
+type Emoji = string;
+
+export interface EmojiGroup {
+	[emojiName: string]: Emoji;
+}
+
+export interface EmojiTable {
+	[categoryName: string]: EmojiGroup
+}
+
+const emojiTable: EmojiTable = {
 	'People': {
 		'smile': '😄',
 		'smiley': '😃',
@@ -636,5 +646,19 @@ export default {
 		'large_blue_diamond': '🔷',
 		'small_orange_diamond': '🔸',
 		'small_blue_diamond': '🔹',
-	},
+	}
+};
+
+export interface EmojiCategoriesIcons {
+	[categoryName: string]: string;
 }
+
+export const emojiCategoriesIcons: EmojiCategoriesIcons = {
+	'People': '😀',
+	'Nature': '🐱',
+	'Objects': '🎍',
+	'Places': '🏠',
+	'Symbols': '🔟'
+};
+
+export default emojiTable;

@@ -1,17 +1,18 @@
 <template>
 	<div class="message-textarea">
-		<div class="emoji-button-container">
-			<EmojiSelector @insert="insertEmoji"></EmojiSelector>
+		<div class="emoji-button-container full-height">
+			<EmojiSelector @emoji-click="insertEmoji" @close="onEmojiSelectorClose"></EmojiSelector>
 		</div>
-		<div class="textarea-container">
+		<div class="textarea-container full-height">
 			<textarea
 					ref="textarea"
+					class="full-height"
 					v-model="message"
 					rows="3"
 					@keypress.enter="onEnterPress"
 			></textarea>
 		</div>
-		<div class="send-button-container">
+		<div class="send-button-container full-height">
 			<button :disabled="message.length === 0" @click="sendMessage">Send</button>
 		</div>
 	</div>
@@ -19,9 +20,9 @@
 
 <script lang="ts">
 	import {Component, Vue} from 'vue-property-decorator';
-	import ChatMessage from '@/assets/model/ChatMessage';
 	import EmojiPicker from 'vue-emoji-picker'
-	import EmojiSelector from '@/components/EmojiSelector.vue';
+	import EmojiSelector from '@/components/emoji/EmojiSelector.vue';
+	import isMobileBrowser from '@/util/mobile-check';
 
 	@Component({
 		components: {EmojiSelector, EmojiPicker}
@@ -39,18 +40,13 @@
 				return;
 			}
 
-			this.$emit('send', this.createMessageInstance());
-			this.clearCurrentMessage();
-			this.$refs.textarea.focus();
-		}
+			this.$emit('send', this.message);
 
-		private createMessageInstance(): ChatMessage {
-			return {
-				id: -1,
-				message: this.message,
-				user: 'Néstor',
-				timestamp: Date.now()
-			};
+			this.clearCurrentMessage();
+
+			if (!isMobileBrowser()) {
+				this.$refs.textarea.focus();
+			}
 		}
 
 		private clearCurrentMessage(): void {
@@ -70,14 +66,29 @@
 				this.message = this.message.substring(0, selectionStart) + emoji + this.message.substring(selectionEnd);
 			}
 
+			const newSelectionIndex = selectionStart + emoji.length;
+
+			setTimeout(() => {
+				this.$refs.textarea.setSelectionRange(newSelectionIndex, newSelectionIndex, 'forward');
+				if (!isMobileBrowser()) {
+					this.$refs.textarea.focus();
+				}
+			}, 10);
+
 		}
 
-		private onEnterPress(event: KeyboardEvent) {
+		private onEnterPress(event: KeyboardEvent): void {
 			if (event.ctrlKey) {
 				this.message += '\n';
 			} else if (!event.shiftKey) {
 				event.preventDefault();
 				this.sendMessage();
+			}
+		}
+
+		private onEmojiSelectorClose(): void {
+			if (!isMobileBrowser()) {
+				this.$refs.textarea.focus();
 			}
 		}
 
@@ -87,7 +98,6 @@
 <style scoped>
 	.message-textarea {
 		width: 100%;
-		height: 100%;
 	}
 
 	.message-textarea > * {
@@ -101,18 +111,16 @@
 	.emoji-button-container {
 		float: left;
 		width: 80px;
-		height: 100%;
+		padding: 10px;
 	}
 
 	.textarea-container {
 		float: left;
 		width: calc(100% - 180px);
-		height: 100%;
 	}
 
 	.textarea-container textarea {
 		width: 100%;
-		height: 100%;
 		resize: none;
 		outline: none;
 		font-family: Roboto, sans-serif;
@@ -123,7 +131,6 @@
 	.send-button-container {
 		float: left;
 		width: 80px;
-		height: 100%;
 	}
 
 	.send-button-container button {

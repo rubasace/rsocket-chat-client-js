@@ -1,8 +1,9 @@
 <template>
-	<div class="scroll-border-radius-wrapper">
-		<div ref="container" class="messages-container">
+	<div class="messages-container scroll-border-radius-wrapper full-height">
+		<div ref="container" class="messages-container-inner full-height">
 			<div
-					v-for="message in messages"
+					v-for="(message, index) in messages"
+					:key="index"
 					:class="{message: true, 'own-message': message.user === username}"
 			>
 				<p class="message-timestamp">{{ message.timestamp | formatTimestamp }}</p>
@@ -67,11 +68,10 @@
 		overflow: hidden;
 	}
 
-	.messages-container {
+	.messages-container-inner {
 		overflow: auto;
 		border: 1px solid #ccc;
 		border-radius: 10px;
-		height: 100%;
 	}
 
 	.message {
@@ -79,6 +79,7 @@
 		background-color: #ebedff;
 		margin: 10px;
 		max-width: 90%;
+		border: 1px solid #cad0ff;
 		border-radius: 10px;
 		padding: 10px;
 	}
@@ -86,6 +87,7 @@
 	.message.own-message {
 		margin-left: 10%;
 		background-color: #ebffed;
+		border-color: #bff5c4;
 	}
 
 	.message-timestamp {
@@ -103,6 +105,7 @@
 
 	.message-content {
 		margin: 0;
-		white-space: pre;
+		white-space: pre-wrap;
+		word-break: break-word;
 	}
 </style>

@@ -17,6 +17,7 @@
 		"rsocket-core": "0.0.10",
 		"rsocket-flowable": "0.0.10",
 		"rsocket-websocket-client": "0.0.10",
+		"v-click-outside": "^2.1.4",
 		"vue": "^2.6.10",
 		"vue-class-component": "^7.0.2",
 		"vue-emoji-picker": "^1.0.1",
