@@ -13,7 +13,7 @@
 			></textarea>
 		</div>
 		<div class="send-button-container full-height">
-			<button :disabled="message.length === 0" @click="sendMessage">Send</button>
+			<button @click="sendMessage">Send</button>
 		</div>
 	</div>
 </template>

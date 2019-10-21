@@ -11,17 +11,13 @@
 					:placeholder="`write ${minLength} chars at least`"
 					type="text"
 					autofocus
+					:class="{error: doValidation && !isValid}"
 					@keypress.enter="onLogin"
 			>
 		</p>
 
 		<p>
-			<button
-					:disabled="username.length < minLength"
-					@click="onLogin"
-			>
-				Login
-			</button>
+			<button @click="onLogin">Login</button>
 		</p>
 
 	</div>
@@ -34,11 +30,24 @@
 	export default class LoginView extends Vue {
 
 		private minLength: number = 3;
+		private doValidation: boolean = false;
 
 		private username: string = '';
 
+		private get trimmedUsername(): string {
+			return this.username.trim();
+		}
+
+		private get isValid(): boolean {
+			return this.trimmedUsername.length >= this.minLength;
+		}
+
 		private onLogin(): void {
-			this.$emit('login', this.username);
+			if (this.isValid) {
+				this.$emit('login', this.username);
+			} else {
+				this.doValidation = true;
+			}
 		}
 
 	}
@@ -62,6 +71,11 @@
 	.login-view input {
 		width: 100%;
 		text-align: center;
+	}
+
+	.login-view input.error {
+		color: red;
+		border-color: red;
 	}
 
 	.login-view button {
