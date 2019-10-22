@@ -42,7 +42,8 @@ class ChatRSocket {
 			},
 			transport: new RSocketWebSocketClient({
 				// url: 'ws://81.154.207.110:17000/'
-				url: 'ws://localhost:7000/'
+				// url: 'ws://localhost:7000/'
+				url: 'ws://192.168.0.14:7000/'
 			}),
 			responder: {
 				fireAndForget: (payload: Payload<UserData, string>): void => {
@@ -52,7 +53,8 @@ class ChatRSocket {
 			}
 		});
 
-		client.connect().then((socket: ReactiveSocket<any, string>) => this.onConnect(socket));
+		client.connect()
+			.then((socket: ReactiveSocket<any, string>) => this.onConnect(socket), (error: any) => alert(error));
 
 	}
 
