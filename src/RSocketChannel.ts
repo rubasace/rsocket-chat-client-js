@@ -35,7 +35,7 @@ export default class RSocketChannel<I, O = I> {
             },
             setup: {
                 // @ts-ignore
-                data: '{"userId": "Regue"}',
+                data: '{"userId": "TypescriptBot"}',
                 // ms btw sending keepalive to server
                 keepAlive: 60000,
                 // ms timeout if no keepalive response
@@ -52,7 +52,7 @@ export default class RSocketChannel<I, O = I> {
             }),
             responder: {
                 fireAndForget(payload: Payload<I, string>): void {
-                    console.log('My userId is ' + payload.data)
+                    console.log('My userId is ' + JSON.stringify(payload.data))
                 }
             }
         });
@@ -98,28 +98,45 @@ export default class RSocketChannel<I, O = I> {
 
         incomingFlowable.subscribe({
             onComplete() {
-                console.log('[Incoming] Completed');
+                console.log('[Messages] Completed');
             },
             onError(error) {
-                console.error('[Incoming] Error:', error);
+                console.error('[Messages] Error:', error);
             },
             onNext: (value: Payload<I, string>) => {
-                console.log('[Incoming] Received:', value);
+                console.log('[Messages] Received:', JSON.stringify(value.data));
 
-                if (value.data != null) {
-                    try {
-                        this.onReceivedCallback(value.data);
-                    } catch (error) {
-                        console.error('onReceivedCallback() error:', error);
-                    }
-                }
+                // if (value.data != null) {
+                //     try {
+                //         this.onReceivedCallback(value.data);
+                //     } catch (error) {
+                //         console.error('onReceivedCallback() error:', error);
+                //     }
+                // }
             },
             // Nothing happens until `request(n)` is called
             onSubscribe(sub: ISubscription) {
-                console.log('[Incoming] I am subscribed.');
+                console.log('[Messages] I am subscribed.');
                 sub.request(99999);
             },
         });
+
+        socket.requestStream({}).subscribe({
+            onComplete() {
+                console.log('[Notifications] Completed');
+            },
+            onError(error) {
+                console.error('[Notifications] Error:', error);
+            },
+            onNext: (value: Payload<I, string>) => {
+                console.log('[Notifications] Received:', JSON.stringify(value.data));
+            },
+            // Nothing happens until `request(n)` is called
+            onSubscribe(sub: ISubscription) {
+                console.log('[Notifications] I am subscribed.');
+                sub.request(99999);
+            }
+        })
 
     }
 
