@@ -10,10 +10,11 @@
 					v-model="message"
 					rows="3"
 					@keypress.enter="onEnterPress"
+					@blur="onTextAreaBlur"
 			></textarea>
 		</div>
 		<div class="send-button-container full-height">
-			<button @click="sendMessage">Send</button>
+			<button ref="sendButton" @click="sendMessage">Send</button>
 		</div>
 	</div>
 </template>
@@ -30,7 +31,8 @@
 	export default class MessageTextarea extends Vue {
 
 		public $refs!: {
-			textarea: HTMLTextAreaElement
+			textarea: HTMLTextAreaElement,
+			sendButton: HTMLButtonElement
 		};
 
 		private message: string = '';
@@ -86,10 +88,21 @@
 			}
 		}
 
+		private onTextAreaBlur(event: FocusEvent): void {
+			// Prevent textarea's focus lost when clicking/touching the send button
+			if (event.relatedTarget === this.$refs.sendButton) {
+				this.$refs.textarea.focus();
+			}
+		}
+
 		private onEmojiSelectorClose(): void {
 			if (!isMobileBrowser()) {
 				this.$refs.textarea.focus();
 			}
+		}
+
+		private mounted(): void {
+			this.$refs.textarea.focus();
 		}
 
 	}
