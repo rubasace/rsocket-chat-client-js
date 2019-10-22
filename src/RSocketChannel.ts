@@ -2,6 +2,7 @@ import {IdentitySerializers, JsonSerializers, RSocketClient} from 'rsocket-core'
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {Flowable, Single} from 'rsocket-flowable';
 import {ISubscriber, ISubscription, Payload, ReactiveSocket} from 'rsocket-types';
+import Message from "@/Message";
 
 type Consumer<T> = (t: T) => void;
 type Sender<T> = (data: T) => void;
@@ -53,6 +54,7 @@ export default class RSocketChannel<I, O = I> {
             responder: {
                 fireAndForget(payload: Payload<I, string>): void {
                     console.log('My userId is ' + JSON.stringify(payload.data))
+
                 }
             }
         });
@@ -62,7 +64,7 @@ export default class RSocketChannel<I, O = I> {
 
     }
 
-    outgoingFlowableSource(subscriber: ISubscriber<Payload<O, string>>): void {
+    outgoingFlowableSource(subscriber: ISubscriber<Payload<Message, string>>): void {
 
         // this is not executed until `subscribe()` is called
 
@@ -76,12 +78,11 @@ export default class RSocketChannel<I, O = I> {
                 console.log(`[Outgoing] Asked for ${n}.`);
 
                 if (!this.readyForSending) {
-                    console.log('[Outgoing] Sending setup...');
-                    subscriber.onNext({metadata: 'setup'});
+                    console.log('[Outgoing] Sending Greeting...');
+                    // TODO read userId properly and reuse it here
+                    subscriber.onNext({data: {user: "I dont exist", message: "Wow, this demo is awesome!!", timestamp: new Date().getTime()}});
                     this.readyForSending = true;
-                    this.onReadyCallback(data => subscriber.onNext({
-                        data
-                    }));
+                    // this.onReadyCallback(data => subscriber.onNext({data}));
                 } else {
                     console.log('[Outgoing] Connection already established; so request is ignored');
                 }
@@ -89,11 +90,12 @@ export default class RSocketChannel<I, O = I> {
             }
         });
 
+
     }
 
     onConnect(socket: ReactiveSocket<I, string>) {
 
-        const outgoingFlowable = new Flowable<Payload<O, any>>(subscriber => this.outgoingFlowableSource(subscriber));
+        const outgoingFlowable = new Flowable<Payload<Message, any>>(subscriber => this.outgoingFlowableSource(subscriber));
         const incomingFlowable = socket.requestChannel(outgoingFlowable as any as Flowable<Payload<I, any>>);
 
         incomingFlowable.subscribe({
@@ -106,13 +108,13 @@ export default class RSocketChannel<I, O = I> {
             onNext: (value: Payload<I, string>) => {
                 console.log('[Messages] Received:', JSON.stringify(value.data));
 
-                // if (value.data != null) {
-                //     try {
-                //         this.onReceivedCallback(value.data);
-                //     } catch (error) {
-                //         console.error('onReceivedCallback() error:', error);
-                //     }
-                // }
+                if (value.data != null) {
+                    try {
+                        this.onReceivedCallback(value.data);
+                    } catch (error) {
+                        console.error('onReceivedCallback() error:', error);
+                    }
+                }
             },
             // Nothing happens until `request(n)` is called
             onSubscribe(sub: ISubscription) {

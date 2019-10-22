@@ -18,7 +18,7 @@
 <script lang="ts">
 	import {Component, Vue} from 'vue-property-decorator';
 	import RSocketChannel, {Sender} from '@/RSocketChannel';
-	import ConfigurationData from '@/ConfigurationData';
+	import ConfigurationData from '@/Message';
 
 	@Component({})
 	export default class RSocketTestView extends Vue {
@@ -30,7 +30,7 @@
 		private configuration: ConfigurationData | null = null;
 
 		private get lastId(): string {
-			return this.configuration != null ? this.configuration.id : '---';
+			return this.configuration != null ? this.configuration.message : '---';
 		}
 
 		private get lastIdDate(): number | null {
@@ -40,7 +40,8 @@
 		private onSendButtonClick() {
 			if (this.sender) {
 				this.sender({
-					id: this.inputText,
+				    user: "changeme",
+					message: this.inputText,
 					timestamp: Date.now()
 				});
 			} else {
