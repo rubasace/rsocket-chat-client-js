@@ -17,43 +17,40 @@
 
 <script lang="ts">
 	import {Component, Vue} from 'vue-property-decorator';
-	import RSocketChannel, {Sender} from '@/RSocketChannel';
-	import ConfigurationData from '@/Message';
+	import {connectChatRSocket, MessageSender} from '@/ChatRSocket';
+	import ChatMessage from '@/model/ChatMessage';
+	import UserList from '@/model/UserList';
 
 	@Component({})
 	export default class RSocketTestView extends Vue {
 
 		private inputText: string = '';
 
-		private sender: Sender<ConfigurationData> | null = null;
+		private sender: MessageSender | null = null;
 
-		private configuration: ConfigurationData | null = null;
+		private message: ChatMessage | null = null;
 
 		private get lastId(): string {
-			return this.configuration != null ? this.configuration.message : '---';
+			return this.message != null ? this.message.message : '---';
 		}
 
 		private get lastIdDate(): number | null {
-			return this.configuration != null ? this.configuration.timestamp : null;
+			return this.message != null ? this.message.timestamp : null;
 		}
 
 		private onSendButtonClick() {
 			if (this.sender) {
-				this.sender({
-				    user: "changeme",
-					message: this.inputText,
-					timestamp: Date.now()
-				});
+				this.sender(this.inputText);
 			} else {
 				console.warn('Not ready for send');
 			}
 		}
 
 		private mounted() {
-			new RSocketChannel<ConfigurationData>(
-				sender => this.sender = sender,
-				configurationData => this.configuration = configurationData
-			);
+			const rsocket = connectChatRSocket('TypescriptBot');
+			rsocket.on('ready', (sender: MessageSender) => this.sender = sender);
+			rsocket.on('user-list', (userList: UserList) => console.log('User list:', JSON.stringify(userList)));
+			rsocket.on('message', (message: ChatMessage) => this.message = message);
 		}
 
 	}

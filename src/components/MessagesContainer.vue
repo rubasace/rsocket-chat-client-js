@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-	import ChatMessage from '@/assets/model/ChatMessage';
+	import ChatMessage from '@/model/ChatMessage';
 
 	@Component({
 		filters: {
