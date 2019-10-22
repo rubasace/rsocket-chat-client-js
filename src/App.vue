@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 
-		<LoginView
+		<!--		<LoginView
 				v-if="username == null"
 				@login="username = $event"
 		></LoginView>
@@ -9,9 +9,9 @@
 		<ChatRoomView
 				v-else
 				:username="username"
-		></ChatRoomView>
+		></ChatRoomView> -->
 
-		<!--		<RSocketTestView></RSocketTestView>-->
+		<RSocketTestView></RSocketTestView>
 	</div>
 </template>
 
