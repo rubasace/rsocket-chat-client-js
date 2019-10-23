@@ -7,7 +7,8 @@ steps:
     commands:
       - npm install
       - npm run build
-  - name: bake
+
+  - name: bake-stable
     image: plugins/docker
     settings:
       username:
@@ -19,4 +20,20 @@ steps:
     when:
       branch:
         - master
-        - release/*
+
+  - name: bake-beta
+      image: plugins/docker
+      settings:
+        username:
+          from_secret: docker_user
+        password:
+          from_secret: docker_pass
+        repo: rubasace/rsocket-chat-client-js
+        tags: beta
+      when:
+        branch:
+          - release/*
+
+---
+kind: signature
+hmac: 2e5d67931b81edc097dc82214730a6e794067308fbe49161f6bda18746e5da76
