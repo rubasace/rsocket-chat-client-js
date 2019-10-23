@@ -1,0 +1,22 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: build
+    image: node:lts-alpine
+    commands:
+      - npm install
+      - npm run build
+  - name: bake
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_pass
+      repo: rubasace/rsocket-chat-client-js
+      tags: stable
+    when:
+      branch:
+        - master
+        - release/*
