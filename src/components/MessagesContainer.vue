@@ -48,15 +48,19 @@
 
 		@Watch('messages')
 		private onMessagesChange(): void {
-			setTimeout(this.moveScrollToBottom, 10);
+			setTimeout(this.moveScrollToLastMessage, 10);
 		}
 
 		private mounted(): void {
-			this.moveScrollToBottom();
+			this.moveScrollToLastMessage();
 		}
 
-		private moveScrollToBottom(): void {
-			this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
+		private moveScrollToLastMessage(): void {
+			const lastMessage = this.$refs.container.lastElementChild;
+
+			if (lastMessage) {
+				lastMessage.scrollIntoView();
+			}
 		}
 
 	}
