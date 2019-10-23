@@ -41,9 +41,7 @@ class ChatRSocket {
 				metadataMimeType: 'message/x.rsocket.routing.v0',
 			},
 			transport: new RSocketWebSocketClient({
-				// url: 'ws://81.154.207.110:17000/'
-				// url: 'ws://localhost:7000/'
-				url: 'ws://192.168.0.14:7000/'
+				url: 'ws://nasvigo.duckdns.org:7000/'
 			}),
 			responder: {
 				fireAndForget: (payload: Payload<UserData, string>): void => {
