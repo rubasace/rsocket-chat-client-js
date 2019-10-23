@@ -22,17 +22,17 @@ steps:
         - master
 
   - name: bake-beta
-      image: plugins/docker
-      settings:
-        username:
-          from_secret: docker_user
-        password:
-          from_secret: docker_pass
-        repo: rubasace/rsocket-chat-client-js
-        tags: beta
-      when:
-        branch:
-          - release/*
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_pass
+      repo: rubasace/rsocket-chat-client-js
+      tags: beta
+    when:
+      branch:
+        - release/*
 
 ---
 kind: signature
