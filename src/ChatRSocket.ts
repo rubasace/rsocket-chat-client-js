@@ -8,6 +8,17 @@ import UserData from '@/model/UserData';
 
 export type MessageSender = (message: string) => void;
 
+const INITIAL_MESSAGES = [
+	'Wow, this demo is awesome!! \ud83d\ude31',
+	'This looks great! \ud83d\udc4d',
+	'RSocket is the best \ud83d\ude0e'
+];
+
+function getRandomInitialMessage(): string {
+	const randomIndex = Math.floor(Math.random() * INITIAL_MESSAGES.length);
+	return INITIAL_MESSAGES[randomIndex];
+}
+
 class ChatRSocket {
 
 	private eventBus: EventBus;
@@ -41,7 +52,7 @@ class ChatRSocket {
 				metadataMimeType: 'message/x.rsocket.routing.v0',
 			},
 			transport: new RSocketWebSocketClient({
-				url: 'ws://nasvigo.duckdns.org:7000/'
+				url: 'ws://nestorrente.duckdns.org:7000/'
 			}),
 			responder: {
 				fireAndForget: (payload: Payload<UserData, string>): void => {
@@ -87,7 +98,7 @@ class ChatRSocket {
 					};
 
 					setTimeout(() => {
-						messageSender('Wow, this demo is awesome!!');
+						messageSender(getRandomInitialMessage());
 						this.eventBus.trigger('ready', messageSender);
 					}, 1000);
 

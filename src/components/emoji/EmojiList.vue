@@ -32,13 +32,8 @@
 <script lang="ts">
 	import {Component, Prop, Vue} from 'vue-property-decorator';
 	import emojiTable, {emojiCategoriesIcons, EmojiCategoriesIcons, EmojiGroup, EmojiTable} from '@/components/emojiTable';
-	import vClickOutside from 'v-click-outside';
 
-	@Component({
-		directives: {
-			clickOutside: vClickOutside.directive
-		}
-	})
+	@Component({})
 	export default class EmojiSelector extends Vue {
 
 		@Prop({

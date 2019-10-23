@@ -1,17 +1,21 @@
 <template>
 	<div id="app">
 
+		<Loading
+				:active="connecting"
+				is-full-page
+				:width="128"
+				:height="128"
+				color="#33a070"
+		></Loading>
+
 		<LoginView
 				v-if="username == null"
 				@login="onLogin"
 		></LoginView>
 
-		<p
-				v-else-if="connecting"
-		>Connecting...</p>
-
 		<ChatRoomView
-				v-else
+				v-else-if="!connecting"
 				:username="username"
 				:messages="messages"
 				:users="users"
@@ -30,9 +34,14 @@
 	import {connectChatRSocket, MessageSender} from '@/ChatRSocket';
 	import UserList from '@/model/UserList';
 	import ChatMessage from '@/model/ChatMessage';
+	// Import component
+	// @ts-ignore
+	import Loading from 'vue-loading-overlay';
+	// Import stylesheet
+	import 'vue-loading-overlay/dist/vue-loading.css';
 
 	@Component({
-		components: {LoginView, RSocketTestView, ChatRoomView}
+		components: {LoginView, RSocketTestView, ChatRoomView, Loading}
 	})
 	export default class App extends Vue {
 

@@ -80,12 +80,19 @@
 		}
 
 		private onEnterPress(event: KeyboardEvent): void {
+
+			if (isMobileBrowser()) {
+				// Do default behaviour
+				return;
+			}
+
 			if (event.ctrlKey) {
 				this.message += '\n';
 			} else if (!event.shiftKey) {
 				event.preventDefault();
 				this.sendMessage();
 			}
+
 		}
 
 		private onTextAreaBlur(event: FocusEvent): void {
