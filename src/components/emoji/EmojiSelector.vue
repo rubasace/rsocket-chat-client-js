@@ -23,7 +23,7 @@
 	import {Component, Vue, Watch} from 'vue-property-decorator';
 	import vClickOutside from 'v-click-outside';
 	import EmojiList from '@/components/emoji/EmojiList.vue';
-	import isMobileBrowser from '@/util/mobile-check';
+	import {isMobileDevice} from '@/util/device-type-detection';
 
 	@Component({
 		components: {EmojiList},
@@ -53,7 +53,7 @@
 			if (open) {
 				this.$emit('open');
 
-				if (!isMobileBrowser()) {
+				if (!isMobileDevice()) {
 					setTimeout(() => this.$refs.searchInput.focus(), 10);
 				}
 			} else {

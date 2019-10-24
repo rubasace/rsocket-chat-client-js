@@ -5,7 +5,8 @@ import {ISubscriber, ISubscription, Payload, ReactiveSocket} from 'rsocket-types
 import ChatMessage from '@/model/ChatMessage';
 import EventBus from '@/util/event-bus/EventBus';
 import UserData from '@/model/UserData';
-import {DeviceType} from "@/model/DeviceType";
+import ConnectionData from '@/model/ConnectionData';
+import {getCurrentDeviceType} from '@/util/device-type-detection';
 
 export type MessageSender = (message: string) => void;
 
@@ -31,6 +32,11 @@ class ChatRSocket {
 
 		this.eventBus = eventBus;
 
+		const connectionData: ConnectionData = {
+			username: username,
+			deviceType: getCurrentDeviceType()
+		};
+
 		const client = new RSocketClient<any, string>({
 			// send/receive objects instead of strings/buffers
 			serializers: {
@@ -39,10 +45,7 @@ class ChatRSocket {
 			},
 			setup: {
 				// @ts-ignore
-				data: JSON.stringify({
-					username: username,
-                    deviceType: DeviceType.MOBILE
-				}),
+				data: JSON.stringify(connectionData),
 				// ms btw sending keepalive to server
 				keepAlive: 60000,
 				// ms timeout if no keepalive response

@@ -1,10 +1,12 @@
+import DeviceType from '@/model/DeviceType';
 <template>
 	<ul class="chat-users-list">
-		<li class="chat-user-username mobile"
-			v-for="(user, index) in sortedUsers"
-			:key="index"
+		<li
+				v-for="(connection, index) in sortedConnections"
+				:class="getListItemClass(connection)"
+				:key="index"
 		>
-			{{ user }}
+			{{ connection.username }}
 		</li>
 	</ul>
 </template>
@@ -12,6 +14,10 @@
 <script lang="ts">
 	import {Component, Prop, Vue} from 'vue-property-decorator';
 	import compareStrings from '@/util/compare-strings';
+	import ConnectionData from '@/model/ConnectionData';
+	import {ClassListObject} from '@/util/vue-types';
+	import {isMobileDevice} from '@/util/device-type-detection';
+
 
 	@Component({})
 	export default class ChatUsersList extends Vue {
@@ -20,12 +26,19 @@
 			required: true,
 			type: Array
 		})
-		private users!: string[];
+		private connections!: ConnectionData[];
 
-		private get sortedUsers(): string[] {
-			const sortedUsers = [...this.users];
-			sortedUsers.sort(compareStrings);
-			return sortedUsers;
+		private get sortedConnections(): ConnectionData[] {
+			const sortedConnections = [...this.connections];
+			sortedConnections.sort((a, b) => compareStrings(a.username, b.username));
+			return sortedConnections;
+		}
+
+		private getListItemClass(connection: ConnectionData): ClassListObject {
+			return {
+				'chat-user-username': true,
+				mobile: isMobileDevice(connection.deviceType)
+			};
 		}
 
 	}
@@ -46,7 +59,6 @@
 	}
 
 	.chat-user-username::before {
-		/*content: '\d83d\dc64';*/
 		content: '\d83d\dcbb';
 	}
 

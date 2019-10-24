@@ -1,7 +1,6 @@
-import {DeviceType} from "@/model/DeviceType";
+import DeviceType from '@/model/DeviceType';
 
-export default interface UserData {
-    username: string;
-    deviceType: DeviceType;
-
+export default interface ConnectionData {
+	username: string;
+	deviceType: DeviceType;
 }

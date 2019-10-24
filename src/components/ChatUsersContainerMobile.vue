@@ -1,9 +1,9 @@
 <template>
 	<div class="chat-users-container-mobile full-height">
-		<p class="users-count-text" @click="showingModal = true">{{ users.length }} online users</p>
+		<p class="users-count-text" @click="showingModal = true">{{ onlineUsersCountMessage }}</p>
 
-		<Modal title="Room users" :showing.sync="showingModal">
-			<ChatUsersList :users="users"></ChatUsersList>
+		<Modal :title="onlineUsersCountMessage" :showing.sync="showingModal">
+			<ChatUsersList :connections="connections"></ChatUsersList>
 		</Modal>
 	</div>
 </template>
@@ -12,6 +12,7 @@
 	import {Component, Prop, Vue} from 'vue-property-decorator';
 	import ChatUsersList from '@/components/ChatUsersList.vue';
 	import Modal from '@/components/Modal.vue';
+	import ConnectionData from '@/model/ConnectionData';
 
 	@Component({
 		components: {Modal, ChatUsersList}
@@ -22,9 +23,16 @@
 			required: true,
 			type: Array
 		})
-		private users!: string[];
+		private connections!: ConnectionData[];
 
 		private showingModal: boolean = false;
+
+		private get onlineUsersCountMessage(): string {
+			if (this.connections.length === 1) {
+				return '1 online user';
+			}
+			return `${this.connections.length} online users`;
+		}
 
 	}
 </script>

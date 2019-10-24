@@ -4,17 +4,17 @@
 		<div class="users-and-messages-container">
 
 			<ChatUsersContainerMobile
-					v-if="mobileBrowser"
-					:users="users"
+					v-if="mobileDevice"
+					:connections="connections"
 			></ChatUsersContainerMobile>
 
 			<ChatUsersContainer
 					v-else
-					:users="users"
+					:connections="connections"
 			></ChatUsersContainer>
 
 			<MessagesContainer
-					:class="{mobile: mobileBrowser}"
+					:class="{mobile: mobileDevice}"
 					:username="username"
 					:messages="messages"
 			></MessagesContainer>
@@ -34,8 +34,9 @@
 	import MessageTextarea from '@/components/MessageTextarea.vue';
 	import ChatMessage from '@/model/ChatMessage';
 	import ChatUsersContainer from '@/components/ChatUsersContainer.vue';
-	import isMobileBrowser from '@/util/mobile-check';
+	import {isMobileDevice} from '@/util/device-type-detection';
 	import ChatUsersContainerMobile from '@/components/ChatUsersContainerMobile.vue';
+	import ConnectionData from '@/model/ConnectionData';
 
 	@Component({
 		components: {ChatUsersContainerMobile, ChatUsersContainer, MessageTextarea, MessagesContainer}
@@ -58,9 +59,9 @@
 			type: Array,
 			required: true
 		})
-		private users!: string[];
+		private connections!: ConnectionData[];
 
-		private mobileBrowser: boolean = isMobileBrowser();
+		private mobileDevice: boolean = isMobileDevice();
 
 	}
 </script>

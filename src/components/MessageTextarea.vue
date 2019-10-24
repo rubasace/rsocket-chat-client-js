@@ -23,7 +23,7 @@
 	import {Component, Vue} from 'vue-property-decorator';
 	import EmojiPicker from 'vue-emoji-picker'
 	import EmojiSelector from '@/components/emoji/EmojiSelector.vue';
-	import isMobileBrowser from '@/util/mobile-check';
+	import {isMobileDevice} from '@/util/device-type-detection';
 
 	@Component({
 		components: {EmojiSelector, EmojiPicker}
@@ -46,7 +46,7 @@
 
 			this.clearCurrentMessage();
 
-			if (!isMobileBrowser()) {
+			if (!isMobileDevice()) {
 				this.$refs.textarea.focus();
 			}
 		}
@@ -72,7 +72,7 @@
 
 			setTimeout(() => {
 				this.$refs.textarea.setSelectionRange(newSelectionIndex, newSelectionIndex, 'forward');
-				if (!isMobileBrowser()) {
+				if (!isMobileDevice()) {
 					this.$refs.textarea.focus();
 				}
 			}, 10);
@@ -81,7 +81,7 @@
 
 		private onEnterPress(event: KeyboardEvent): void {
 
-			if (isMobileBrowser()) {
+			if (isMobileDevice()) {
 				// Do default behaviour
 				return;
 			}
@@ -103,7 +103,7 @@
 		}
 
 		private onEmojiSelectorClose(): void {
-			if (!isMobileBrowser()) {
+			if (!isMobileDevice()) {
 				this.$refs.textarea.focus();
 			}
 		}

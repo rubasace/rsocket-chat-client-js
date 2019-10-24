@@ -1,6 +1,7 @@
-export enum DeviceType {
-
-    MOBILE,
-    TABLET,
-    COMPUTER
+enum DeviceType {
+	PHONE = 'PHONE',
+	TABLET = 'TABLET',
+	COMPUTER = 'COMPUTER'
 }
+
+export default DeviceType;
