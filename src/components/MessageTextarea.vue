@@ -1,7 +1,7 @@
 <template>
 	<div class="message-textarea">
 		<div class="emoji-button-container full-height">
-			<EmojiSelector @emoji-click="insertEmoji" @close="onEmojiSelectorClose"></EmojiSelector>
+			<EmojiSelector :showing.sync="showingEmojiSelector" @emoji-click="insertEmoji" @close="onEmojiSelectorClose"></EmojiSelector>
 		</div>
 		<div class="textarea-container full-height">
 			<textarea
@@ -35,6 +35,8 @@
 			sendButton: HTMLButtonElement
 		};
 
+		private showingEmojiSelector: boolean = false;
+
 		private message: string = '';
 
 		private sendMessage() {
@@ -44,6 +46,9 @@
 
 			this.$emit('send', this.message);
 
+			console.log('Showing before:', this.showingEmojiSelector);
+			this.showingEmojiSelector = false;
+			console.log('Showing after:', this.showingEmojiSelector);
 			this.clearCurrentMessage();
 
 			if (!isMobileDevice()) {

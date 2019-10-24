@@ -4,12 +4,12 @@
 		<button
 				type="button"
 				class="emoji-picker-button full-height"
-				@click.stop="open = !open"
+				@click.stop="internalShowing = !internalShowing"
 		>
 			&#128512;
 		</button>
 
-		<div class="emoji-picker" v-show="open" v-click-outside="onClickOutside">
+		<div class="emoji-picker" v-show="internalShowing" v-click-outside="onClickOutside">
 			<div>
 				<input ref="searchInput" class="search-emoji-input" type="text" v-model="emojiSearch">
 			</div>
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-	import {Component, Vue, Watch} from 'vue-property-decorator';
+	import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
 	import vClickOutside from 'v-click-outside';
 	import EmojiList from '@/components/emoji/EmojiList.vue';
 	import {isMobileDevice} from '@/util/device-type-detection';
@@ -37,7 +37,14 @@
 			searchInput: HTMLInputElement
 		};
 
-		private open: boolean = false;
+		@Prop({
+			default: false,
+			type: Boolean
+		})
+		private showing!: boolean;
+
+		private internalShowing: boolean = this.showing;
+
 		private emojiSearch: string = '';
 
 		private onEmojiClick(emoji: string): void {
@@ -45,13 +52,20 @@
 		}
 
 		private onClickOutside(): void {
-			this.open = false;
+			this.internalShowing = false;
 		}
 
-		@Watch('open')
-		private onOpenChange(open: boolean): void {
-			if (open) {
-				this.$emit('open');
+		@Watch('showing')
+		private onOpenedChange(showing: boolean): void {
+			this.internalShowing = showing;
+		}
+
+		@Watch('internalShowing')
+		private onInternalOpenedChange(internalShowing: boolean): void {
+			this.$emit('update:showing', internalShowing);
+
+			if (internalShowing) {
+				this.$emit('showing');
 
 				if (!isMobileDevice()) {
 					setTimeout(() => this.$refs.searchInput.focus(), 10);
