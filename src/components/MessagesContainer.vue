@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
-	import ChatMessage from '@/model/ChatMessage';
+	import Message from '@/model/Message';
 
 	@Component({
 		filters: {
@@ -44,7 +44,7 @@
 			required: true,
 			type: Array
 		})
-		private messages!: ChatMessage[];
+		private messages!: Message[];
 
 		@Watch('messages')
 		private onMessagesChange(): void {

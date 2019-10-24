@@ -32,7 +32,7 @@
 	import {Component, Prop, Vue} from 'vue-property-decorator';
 	import MessagesContainer from '@/components/MessagesContainer.vue';
 	import MessageTextarea from '@/components/MessageTextarea.vue';
-	import ChatMessage from '@/model/ChatMessage';
+	import Message from '@/model/Message';
 	import ChatUsersContainer from '@/components/ChatUsersContainer.vue';
 	import {isMobileDevice} from '@/util/device-type-detection';
 	import ChatUsersContainerMobile from '@/components/ChatUsersContainerMobile.vue';
@@ -53,7 +53,7 @@
 			type: Array,
 			required: true
 		})
-		private messages!: ChatMessage[];
+		private messages!: Message[];
 
 		@Prop({
 			type: Array,

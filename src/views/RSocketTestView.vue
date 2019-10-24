@@ -18,7 +18,7 @@
 <script lang="ts">
 	import {Component, Vue} from 'vue-property-decorator';
 	import {connectChatRSocket, MessageSender} from '@/ChatRSocket';
-	import ChatMessage from '@/model/ChatMessage';
+	import Message from '@/model/Message';
 	import UserList from '@/model/UserList';
 
 	@Component({})
@@ -28,7 +28,7 @@
 
 		private sender: MessageSender | null = null;
 
-		private message: ChatMessage | null = null;
+		private message: Message | null = null;
 
 		private get lastId(): string {
 			return this.message != null ? this.message.message : '---';
@@ -50,7 +50,7 @@
 			const rsocket = connectChatRSocket('TypescriptBot');
 			rsocket.on('ready', (sender: MessageSender) => this.sender = sender);
 			rsocket.on('user-list', (userList: UserList) => console.log('User list:', JSON.stringify(userList)));
-			rsocket.on('message', (message: ChatMessage) => this.message = message);
+			rsocket.on('message', (message: Message) => this.message = message);
 		}
 
 	}

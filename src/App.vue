@@ -37,7 +37,7 @@
 	import LoginView from '@/views/LoginView.vue';
 	import {connectChatRSocket, MessageSender} from '@/ChatRSocket';
 	import UserList from '@/model/UserList';
-	import ChatMessage from '@/model/ChatMessage';
+	import Message from '@/model/Message';
 	import ConnectionData from '@/model/ConnectionData';
 	// @ts-ignore
 	import Loading from 'vue-loading-overlay';
@@ -54,7 +54,7 @@
 		};
 
 		private username: string | null = null;
-		private messages: ChatMessage[] = [];
+		private messages: Message[] = [];
 		private connections: ConnectionData[] = [];
 
 		private sender: MessageSender | null = null;
@@ -72,7 +72,7 @@
 			eventBus.on('ready', (sender: MessageSender) => this.sender = sender);
 			eventBus.on('user-list', (userList: UserList) => this.connections = userList.connections);
 
-			eventBus.on('message', (message: ChatMessage) => {
+			eventBus.on('message', (message: Message) => {
 
 				this.messages.push(message);
 

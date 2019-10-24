@@ -2,7 +2,7 @@ import {IdentitySerializers, JsonSerializers, RSocketClient} from 'rsocket-core'
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {Flowable} from 'rsocket-flowable';
 import {ISubscriber, ISubscription, Payload, ReactiveSocket} from 'rsocket-types';
-import ChatMessage from '@/model/ChatMessage';
+import Message from '@/model/Message';
 import EventBus from '@/util/event-bus/EventBus';
 import UserData from '@/model/UserData';
 import ConnectionData from '@/model/ConnectionData';
@@ -72,7 +72,7 @@ class ChatRSocket {
 
 	}
 
-	outgoingFlowableSource(subscriber: ISubscriber<Payload<ChatMessage, string>>): void {
+	outgoingFlowableSource(subscriber: ISubscriber<Payload<Message, string>>): void {
 
 		// this is not executed until `subscribe()` is called
 
@@ -92,7 +92,7 @@ class ChatRSocket {
 
 					const messageSender: MessageSender = (message: string) => {
 
-						const data: ChatMessage = {
+						const data: Message = {
 							user: this.userId as string,
 							message: message,
 							timestamp: Date.now()
@@ -119,7 +119,7 @@ class ChatRSocket {
 
 	onConnect(socket: ReactiveSocket<any, string>) {
 
-		const outgoingFlowable = new Flowable<Payload<ChatMessage, any>>(subscriber => this.outgoingFlowableSource(subscriber));
+		const outgoingFlowable = new Flowable<Payload<Message, any>>(subscriber => this.outgoingFlowableSource(subscriber));
 		const incomingFlowable = socket.requestChannel(outgoingFlowable as any as Flowable<Payload<any, any>>);
 
 		incomingFlowable.subscribe({
