@@ -5,6 +5,7 @@ import {ISubscriber, ISubscription, Payload, ReactiveSocket} from 'rsocket-types
 import ChatMessage from '@/model/ChatMessage';
 import EventBus from '@/util/event-bus/EventBus';
 import UserData from '@/model/UserData';
+import {DeviceType} from "@/model/DeviceType";
 
 export type MessageSender = (message: string) => void;
 
@@ -39,7 +40,8 @@ class ChatRSocket {
 			setup: {
 				// @ts-ignore
 				data: JSON.stringify({
-					userId: username
+					username: username,
+                    deviceType: DeviceType.MOBILE
 				}),
 				// ms btw sending keepalive to server
 				keepAlive: 60000,
