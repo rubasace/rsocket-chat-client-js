@@ -55,7 +55,6 @@ class ChatRSocket {
 			},
 			transport: new RSocketWebSocketClient({
 				url: 'ws://nestorrente.duckdns.org:7000/'
-				// url: 'ws://localhost:7000/'
 			}),
 			responder: {
 				fireAndForget: (payload: Payload<UserData, string>): void => {
