@@ -57,7 +57,7 @@ class ChatRSocket {
 				metadataMimeType: 'message/x.rsocket.routing.v0',
 			},
 			transport: new RSocketWebSocketClient({
-				url: 'ws://rsocketmeetup.duckdns.org:7000/'
+				url: 'ws://nestorrente.duckdns.org:7000/'
 			}),
 			responder: {
 				fireAndForget: (payload: Payload<UserData, string>): void => {

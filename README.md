@@ -1,5 +1,11 @@
 # rsocket-chat-client-js
 
+## Online demo
+
+You can try this app here: http://nestorrente.duckdns.org:8888/
+
+Enjoy it! 😀
+
 ## Project setup
 ```
 npm install
