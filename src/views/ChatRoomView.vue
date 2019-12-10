@@ -6,24 +6,24 @@
 			<ChatUsersContainerMobile
 					v-if="mobileDevice"
 					:connections="connections"
-			></ChatUsersContainerMobile>
+			/>
 
 			<ChatUsersContainer
 					v-else
 					:connections="connections"
-			></ChatUsersContainer>
+			/>
 
 			<MessagesContainer
 					:class="{mobile: mobileDevice}"
 					:username="username"
 					:messages="messages"
-			></MessagesContainer>
+			/>
 
 		</div>
 
 		<MessageTextarea
 				@send="$emit('send', $event)"
-		></MessageTextarea>
+		/>
 
 	</div>
 </template>

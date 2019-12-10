@@ -8,10 +8,6 @@ Vue.config.productionTip = false;
 
 fixVhUnits();
 
-// window.onerror = function (event) {
-// 	alert('Uncaught error: ' + event);
-// };
-
 new Vue({
 	render: h => h(App),
 }).$mount('#app');

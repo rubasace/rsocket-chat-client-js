@@ -44,7 +44,7 @@
 
 		private onLogin(): void {
 			if (this.isValid) {
-				this.$emit('login', this.username);
+				this.$emit('login', this.trimmedUsername);
 			} else {
 				this.doValidation = true;
 			}

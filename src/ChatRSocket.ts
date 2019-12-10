@@ -1,4 +1,4 @@
-import {IdentitySerializers, JsonSerializers, RSocketClient} from 'rsocket-core';
+import {JsonSerializers, RSocketClient} from 'rsocket-core';
 import RSocketWebSocketClient from 'rsocket-websocket-client';
 import {Flowable} from 'rsocket-flowable';
 import {ISubscriber, ISubscription, Payload, ReactiveSocket} from 'rsocket-types';
@@ -21,6 +21,12 @@ function getRandomInitialMessage(): string {
 	return INITIAL_MESSAGES[randomIndex];
 }
 
+export function connectChatRSocket(username: string): EventBus {
+	const eventBus = new EventBus();
+	new ChatRSocket(username, eventBus);
+	return eventBus;
+}
+
 class ChatRSocket {
 
 	private eventBus: EventBus;
@@ -39,10 +45,7 @@ class ChatRSocket {
 
 		const client = new RSocketClient<any, string>({
 			// send/receive objects instead of strings/buffers
-			serializers: {
-				data: JsonSerializers.data,
-				metadata: IdentitySerializers.metadata
-			},
+			serializers: JsonSerializers,
 			setup: {
 				// @ts-ignore
 				data: JSON.stringify(connectionData),
@@ -53,8 +56,7 @@ class ChatRSocket {
 				// format of `data`
 				dataMimeType: 'application/json',
 				// format of `metadata`
-				// metadataMimeType: 'application/json',
-				metadataMimeType: 'message/x.rsocket.routing.v0',
+				metadataMimeType: 'message/x.rsocket.routing.v0'
 			},
 			transport: new RSocketWebSocketClient({
 				// @ts-ignore
@@ -63,13 +65,64 @@ class ChatRSocket {
 			responder: {
 				fireAndForget: (payload: Payload<UserData, string>): void => {
 					console.log('My userId is ' + JSON.stringify(payload.data));
-					this.userId = (payload.data as UserData).userId;
+					this.userId = payload.data!.userId;
 				}
 			}
 		});
 
 		client.connect()
-			.then((socket: ReactiveSocket<any, string>) => this.onConnect(socket), (error: any) => alert(error));
+			.then(
+				(socket: ReactiveSocket<any, string>) => this.onConnect(socket),
+				(error: any) => alert(error)
+			);
+
+	}
+
+	onConnect(socket: ReactiveSocket<any, string>) {
+
+		const incomingConnectionStream = socket.requestStream({});
+
+		const outgoingMessagesStream = new Flowable<Payload<Message, any>>(subscriber => this.outgoingFlowableSource(subscriber));
+		const incomingMessagesStream = socket.requestChannel(outgoingMessagesStream);
+
+		incomingConnectionStream.subscribe({
+			onComplete() {
+				console.log('[Notifications] Completed');
+			},
+			onError(error) {
+				console.error('[Notifications] Error:', error);
+			},
+			onNext: (value: Payload<any, string>) => {
+				console.log('[Notifications] Received:', JSON.stringify(value.data));
+				this.eventBus.trigger('user-list', value.data);
+			},
+			onSubscribe(sub: ISubscription) {
+				console.log('[Notifications] I am subscribed.');
+				sub.request(99999);
+			}
+		});
+
+		incomingMessagesStream.subscribe({
+			onComplete() {
+				console.log('[Messages] Completed');
+			},
+			onError(error) {
+				console.error('[Messages] Error:', error);
+			},
+			onNext: (value: Payload<any, string>) => {
+				console.log('[Messages] Received:', JSON.stringify(value.data));
+
+				try {
+					this.eventBus.trigger('message', value.data);
+				} catch (error) {
+					console.error('onReceivedCallback() error:', error);
+				}
+			},
+			onSubscribe(sub: ISubscription) {
+				console.log('[Messages] I am subscribed.');
+				sub.request(99999);
+			},
+		});
 
 	}
 
@@ -118,56 +171,4 @@ class ChatRSocket {
 
 	}
 
-	onConnect(socket: ReactiveSocket<any, string>) {
-
-		const outgoingFlowable = new Flowable<Payload<Message, any>>(subscriber => this.outgoingFlowableSource(subscriber));
-		const incomingFlowable = socket.requestChannel(outgoingFlowable as any as Flowable<Payload<any, any>>);
-
-		incomingFlowable.subscribe({
-			onComplete() {
-				console.log('[Messages] Completed');
-			},
-			onError(error) {
-				console.error('[Messages] Error:', error);
-			},
-			onNext: (value: Payload<any, string>) => {
-				console.log('[Messages] Received:', JSON.stringify(value.data));
-
-				try {
-					this.eventBus.trigger('message', value.data);
-				} catch (error) {
-					console.error('onReceivedCallback() error:', error);
-				}
-			},
-			onSubscribe(sub: ISubscription) {
-				console.log('[Messages] I am subscribed.');
-				sub.request(99999);
-			},
-		});
-
-		socket.requestStream({}).subscribe({
-			onComplete() {
-				console.log('[Notifications] Completed');
-			},
-			onError(error) {
-				console.error('[Notifications] Error:', error);
-			},
-			onNext: (value: Payload<any, string>) => {
-				console.log('[Notifications] Received:', JSON.stringify(value.data));
-				this.eventBus.trigger('user-list', value.data);
-			},
-			onSubscribe(sub: ISubscription) {
-				console.log('[Notifications] I am subscribed.');
-				sub.request(99999);
-			}
-		})
-
-	}
-
-}
-
-export function connectChatRSocket(username: string): EventBus {
-	const eventBus = new EventBus();
-	new ChatRSocket(username, eventBus);
-	return eventBus;
 }

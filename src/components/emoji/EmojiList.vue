@@ -31,7 +31,7 @@
 
 <script lang="ts">
 	import {Component, Prop, Vue} from 'vue-property-decorator';
-	import emojiTable, {emojiCategoriesIcons, EmojiCategoriesIcons, EmojiGroup, EmojiTable} from '@/components/emojiTable';
+	import emojiTable, {emojiCategoriesIcons, EmojiCategoriesIcons, EmojiGroup, EmojiTable} from '@/components/emoji/emojiTable';
 
 	@Component({})
 	export default class EmojiSelector extends Vue {
